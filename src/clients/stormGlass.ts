@@ -48,6 +48,9 @@ export class StormGlass {
           source: this.stormGlassAPISource,
           end: '1592113892',
         },
+        headers: {
+          Authorization: 'fake-token',
+        },
       },
     )
 
