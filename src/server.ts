@@ -2,15 +2,24 @@ import 'module-alias-jest/register'
 import { Server } from '@overnightjs/core'
 import { ForeCastController } from '@src/controllers/forecast'
 import express, { Application } from 'express'
+import { BeachesController } from './controllers/beaches'
+import * as http from 'http'
 
 export class SetupServer extends Server {
+  private server?: http.Server
   constructor(private port = 3000) {
     super()
   }
 
-  public init(): void {
+  public async init(): Promise<void> {
     this.setupExpress()
     this.setupControllers()
+  }
+
+  public start(): void {
+    this.server = this.app.listen(this.port, () => {
+      console.log('Server listening on port: ' + this.port)
+    })
   }
 
   public getApp(): Application {
@@ -23,6 +32,7 @@ export class SetupServer extends Server {
 
   private setupControllers(): void {
     const forecastController = new ForeCastController()
-    this.addControllers([forecastController])
+    const beachesController = new BeachesController()
+    this.addControllers([forecastController, beachesController])
   }
 }

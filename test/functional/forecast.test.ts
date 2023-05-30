@@ -1,4 +1,20 @@
+import { Beach, GeoPosition } from '@src/models/beach'
+import { BeachRepository } from '@src/repositories'
+import { BeachPrismaRepository } from '@src/repositories/beachRepository'
+
 describe('Beach forecast functional tests', () => {
+  beforeEach(async () => {
+    const beachRepository: BeachRepository = new BeachPrismaRepository()
+    await beachRepository.deleteAll()
+    const defaultBeach: Beach = {
+      lat: -33.792726,
+      lng: 151.289824,
+      name: 'Manly',
+      position: GeoPosition.E,
+      userId: 'user-1',
+    }
+    await beachRepository.create(defaultBeach)
+  })
   it('should return a forecast with just a few times', async () => {
     const { body, status } = await global.testRequest.get('/forecast')
     expect(status).toBe(200)
