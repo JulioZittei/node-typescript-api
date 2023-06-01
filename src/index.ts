@@ -1,7 +1,8 @@
 import 'module-alias-jest/register'
 import { SetupServer } from '@src/server'
-
-const server = new SetupServer()
-
-server.init()
-server.start()
+import config from 'config'
+;(async (): Promise<void> => {
+  const server = new SetupServer(config.get('App.port'))
+  await server.init()
+  server.start()
+})()

@@ -1,9 +1,9 @@
-import { Beach, WithPositionString } from '@src/models/beach'
+import { Beach } from '@src/models/beach'
 
 export type FilterOptions = Record<string, unknown>
 
 export interface BaseRepository<T> {
-  create(data: WithPositionString<T>): Promise<T>
+  create(data: T): Promise<T>
   findOne(filter: FilterOptions): Promise<T | undefined>
   find(filter: FilterOptions): Promise<T[]>
   deleteAll(): Promise<void>

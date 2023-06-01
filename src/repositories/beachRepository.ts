@@ -13,9 +13,7 @@ class BeachPrismaRepository implements BeachRepository {
 
   async findOne(filter: FilterOptions): Promise<Beach> {
     const beach = await prisma.beach.findUniqueOrThrow({
-      where: {
-        ...filter,
-      },
+      where: filter,
     })
 
     return Beach.create(beach)
@@ -23,9 +21,7 @@ class BeachPrismaRepository implements BeachRepository {
 
   async find(filter: FilterOptions): Promise<Beach[]> {
     const beaches = await prisma.beach.findMany({
-      where: {
-        ...filter,
-      },
+      where: filter,
     })
 
     return beaches.map((beach) => Beach.create(beach))

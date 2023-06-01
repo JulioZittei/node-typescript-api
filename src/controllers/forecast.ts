@@ -16,8 +16,15 @@ export class ForeCastController {
     _: Request,
     res: Response,
   ): Promise<void> {
-    const beaches = await this.beachRepository.find({})
-    const forecastData = await this.forecast.processForecastForBeaches(beaches)
-    res.status(200).send(forecastData)
+    try {
+      const beaches = await this.beachRepository.find({})
+      const forecastData = await this.forecast.processForecastForBeaches(
+        beaches,
+      )
+      res.status(200).send(forecastData)
+    } catch (error) {
+      console.log((error as Error).message)
+      res.status(500).send({ error: 'Something went wrong' })
+    }
   }
 }

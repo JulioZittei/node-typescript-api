@@ -58,6 +58,7 @@ class Forecast {
         })
       }
     }
+
     return forecastByTime
   }
 }

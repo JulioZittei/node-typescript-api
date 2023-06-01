@@ -69,14 +69,13 @@ export class StormGlass {
             lng,
             params: this.stormGlassAPIParams,
             source: this.stormGlassAPISource,
-            end: '1592113892',
+            end: '1685649600',
           },
           headers: {
             Authorization: stormGlasssResourceConfig.get('apiToken'),
           },
         },
       )
-
       return this.normalizeResponse(response.data)
     } catch (error) {
       if (error instanceof Error && HTTPUtil.Request.isRequestError(error)) {
