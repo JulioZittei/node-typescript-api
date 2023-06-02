@@ -4,6 +4,7 @@ import { ForeCastController } from '@src/controllers/forecast'
 import express, { Application } from 'express'
 import { BeachesController } from './controllers/beaches'
 import * as http from 'http'
+import { UsersController } from './controllers/users'
 
 export class SetupServer extends Server {
   private server?: http.Server
@@ -33,6 +34,11 @@ export class SetupServer extends Server {
   private setupControllers(): void {
     const forecastController = new ForeCastController()
     const beachesController = new BeachesController()
-    this.addControllers([forecastController, beachesController])
+    const usersController = new UsersController()
+    this.addControllers([
+      forecastController,
+      beachesController,
+      usersController,
+    ])
   }
 }

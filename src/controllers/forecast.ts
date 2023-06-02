@@ -3,13 +3,16 @@ import { BeachRepository } from '@src/repositories'
 import { BeachPrismaRepository } from '@src/repositories/beachRepository'
 import { Forecast } from '@src/services/forecast'
 import { Request, Response } from 'express'
+import { BaseController } from '.'
 
 @Controller('forecast')
-export class ForeCastController {
+export class ForeCastController extends BaseController {
   constructor(
     protected beachRepository: BeachRepository = new BeachPrismaRepository(),
     protected forecast: Forecast = new Forecast(),
-  ) {}
+  ) {
+    super()
+  }
 
   @Get('')
   public async getForecastForLoggedUser(
@@ -23,8 +26,7 @@ export class ForeCastController {
       )
       res.status(200).send(forecastData)
     } catch (error) {
-      console.log((error as Error).message)
-      res.status(500).send({ error: 'Something went wrong' })
+      this.sendCreatedUpdatedErrorResponse(res, error)
     }
   }
 }

@@ -35,15 +35,20 @@ describe('Beaches functional tests', () => {
 
       const response = await global.testRequest.post('/beaches').send(newBeach)
       expect(response.status).toBe(422)
-      expect(response.body.error).toContain(
-        "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float.",
+      expect(response.body).toEqual(
+        expect.objectContaining({
+          code: 422,
+          error: expect.stringContaining(
+            "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float.",
+          ),
+        }),
       )
     })
 
     it('should return 500 when there is any error other than validation error', async () => {
-      jest
-        .spyOn(prisma.beach, 'create')
-        .mockRejectedValueOnce('fail to create beach')
+      jest.spyOn(prisma.beach, 'create').mockRejectedValueOnce({
+        message: 'fail to create beach',
+      })
       const newBeach = {
         lat: -33.792726,
         lng: 46.43243,
@@ -57,7 +62,8 @@ describe('Beaches functional tests', () => {
         .set({ 'x-access-token': 'fake-token' })
       expect(response.status).toBe(500)
       expect(response.body).toEqual({
-        error: 'Internal Server Error',
+        code: 500,
+        error: 'Something went wrong.',
       })
     })
   })
