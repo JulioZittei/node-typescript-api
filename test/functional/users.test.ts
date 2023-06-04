@@ -1,10 +1,11 @@
+import { User } from '@src/models/user'
 import { UserRepository } from '@src/repositories'
 import { UserPrismaRepository } from '@src/repositories/userRepository'
 import AuthService from '@src/services/auth'
 
 describe('Users functional tests', () => {
+  const userRepository: UserRepository = new UserPrismaRepository()
   beforeEach(async () => {
-    const userRepository: UserRepository = new UserPrismaRepository()
     await userRepository.deleteAll()
   })
   describe('When creating a new user with encrypted password', () => {
@@ -18,7 +19,7 @@ describe('Users functional tests', () => {
       const response = await global.testRequest.post('/users').send(newUser)
       expect(response.status).toBe(201)
       await expect(
-        AuthService.comparePasswords(response.body.password, newUser.password),
+        AuthService.comparePasswords(newUser.password, response.body.password),
       ).resolves.toBeTruthy()
       expect(response.body).toEqual(
         expect.objectContaining({
@@ -58,6 +59,41 @@ describe('Users functional tests', () => {
       error: expect.stringContaining(
         'Unique constraint failed on the constraint: `User_email_key`',
       ),
+    })
+  })
+
+  describe('When authenticating a user', () => {
+    it('should generate a token for valid user', async () => {
+      const newUser: User = {
+        name: 'Joe Doe',
+        email: 'john@msil.com',
+        password: '1234',
+      }
+
+      const user = await userRepository.create(newUser)
+      const response = await global.testRequest
+        .post('/users/authenticate')
+        .send({ email: newUser.email, password: newUser.password })
+
+      const Jwtalims = AuthService.decodeToken(response.body.token)
+      console.log(response.body.token)
+
+      expect(response.status).toBe(200)
+      expect(Jwtalims).toMatchObject({ sub: user.id })
+    })
+
+    it('Should return UNAUTHORIZED if the user is found but the password does not match', async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john@mail.com',
+        password: '1234',
+      }
+      await userRepository.create(newUser)
+      const response = await global.testRequest
+        .post('/users/authenticate')
+        .send({ email: newUser.email, password: 'different password' })
+
+      expect(response.status).toBe(401)
     })
   })
 })
