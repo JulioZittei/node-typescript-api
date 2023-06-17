@@ -38,7 +38,7 @@ export class SetupServer extends Server {
     this.addControllers([
       forecastController,
       beachesController,
-      usersController,
+      usersController
     ])
   }
 }

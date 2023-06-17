@@ -6,7 +6,7 @@ import {
   DatabaseInternalError,
   DatabaseKnownClientError,
   DatabaseUnknowClientError,
-  DatabaseValidationError,
+  DatabaseValidationError
 } from '@src/util/errors/internal-error'
 
 export type FilterOptions = Record<string, unknown>
@@ -23,31 +23,31 @@ export abstract class AbstractErrorHandlerRepository {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
       console.error(
         'ClientKnownRequestError happened to the database: ',
-        error.message,
+        error.message
       )
       throw new DatabaseKnownClientError(error.message, error.code)
     } else if (error instanceof Prisma.PrismaClientValidationError) {
       console.error(
         'ClientValidationError happened to the database: ',
-        error.message,
+        error.message
       )
       throw new DatabaseValidationError(error.message)
     } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
       console.error(
         'ClientUnknownRequestError happened to the database: ',
-        error.message,
+        error.message
       )
       throw new DatabaseUnknowClientError(error.message)
     } else if (error instanceof Prisma.PrismaClientInitializationError) {
       console.error(
         'ClientInitializationError: happened to the database: ',
-        error.message,
+        error.message
       )
       throw new DatabaseInitializationError(error.message)
     } else {
       console.error(
         'Something unexpected happened to the database: ',
-        (error as Error).message,
+        (error as Error).message
       )
       throw new DatabaseInternalError((error as Error).message)
     }

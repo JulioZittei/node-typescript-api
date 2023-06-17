@@ -15,7 +15,7 @@ describe('StormGlass client', () => {
     const lng = 151.289824
 
     mockedRequest.get.mockResolvedValue({
-      data: stormGlassWeather3HoursFixture,
+      data: stormGlassWeather3HoursFixture
     } as HTTPUtil.Response)
 
     const stormGlass = new StormGlass(mockedRequest)
@@ -31,14 +31,14 @@ describe('StormGlass client', () => {
       hours: [
         {
           windDirection: {
-            noaa: 300,
+            noaa: 300
           },
-          time: '2020-04-26T00:00:00+00:00',
-        },
-      ],
+          time: '2020-04-26T00:00:00+00:00'
+        }
+      ]
     }
     mockedRequest.get.mockResolvedValue({
-      data: incompleteResponse,
+      data: incompleteResponse
     } as HTTPUtil.Response)
 
     const stormGlass = new StormGlass(mockedRequest)
@@ -56,7 +56,7 @@ describe('StormGlass client', () => {
     const stormGlass = new StormGlass(mockedRequest)
 
     await expect(stormGlass.fetchPoints(lat, lng)).rejects.toThrow(
-      'Unexpected error when trying to communicate to StormGlass: Network Error',
+      'Unexpected error when trying to communicate to StormGlass: Network Error'
     )
   })
 
@@ -73,20 +73,20 @@ describe('StormGlass client', () => {
     mockedRequest.get.mockRejectedValue(
       new FakeAxiosError({
         status: 429,
-        data: { errors: ['Rate Limit reached'] },
-      }),
+        data: { errors: ['Rate Limit reached'] }
+      })
     )
 
     MockedRequestClass.isRequestError.mockReturnValue(true)
     MockedRequestClass.extractErrorData.mockReturnValue({
       status: 429,
-      data: { errors: ['Rate Limit reached'] },
+      data: { errors: ['Rate Limit reached'] }
     })
 
     const stormGlass = new StormGlass(mockedRequest)
 
     await expect(stormGlass.fetchPoints(lat, lng)).rejects.toThrow(
-      'Unexpected error returned by the StormGlass service: Error: {"errors":["Rate Limit reached"]} Code: 429',
+      'Unexpected error returned by the StormGlass service: Error: {"errors":["Rate Limit reached"]} Code: 429'
     )
   })
 })

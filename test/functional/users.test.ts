@@ -13,19 +13,19 @@ describe('Users functional tests', () => {
       const newUser = {
         name: 'Joe Doe',
         email: 'john@msil.com',
-        password: '1234',
+        password: '12345'
       }
 
       const response = await global.testRequest.post('/users').send(newUser)
       expect(response.status).toBe(201)
       await expect(
-        AuthService.comparePasswords(newUser.password, response.body.password),
+        AuthService.comparePasswords(newUser.password, response.body.password)
       ).resolves.toBeTruthy()
       expect(response.body).toEqual(
         expect.objectContaining({
           ...newUser,
-          ...{ password: expect.any(String) },
-        }),
+          ...{ password: expect.any(String) }
+        })
       )
     })
   })
@@ -33,14 +33,14 @@ describe('Users functional tests', () => {
   it('Should return 422 when there is a validation error', async () => {
     const newUser = {
       email: 'john@mail.com',
-      password: '1234',
+      password: '12345'
     }
     const response = await global.testRequest.post('/users').send(newUser)
 
     expect(response.status).toBe(422)
     expect(response.body).toEqual({
       code: 422,
-      error: expect.stringContaining('Argument name for data.name is missing.'),
+      error: expect.stringContaining('Argument name for data.name is missing.')
     })
   })
 
@@ -48,7 +48,7 @@ describe('Users functional tests', () => {
     const newUser = {
       name: 'John Doe',
       email: 'john@mail.com',
-      password: '1234',
+      password: '12345'
     }
     await global.testRequest.post('/users').send(newUser)
     const response = await global.testRequest.post('/users').send(newUser)
@@ -57,8 +57,8 @@ describe('Users functional tests', () => {
     expect(response.body).toEqual({
       code: 409,
       error: expect.stringContaining(
-        'Unique constraint failed on the constraint: `User_email_key`',
-      ),
+        'Unique constraint failed on the constraint: `users_email_key`'
+      )
     })
   })
 
@@ -67,7 +67,7 @@ describe('Users functional tests', () => {
       const newUser: User = {
         name: 'Joe Doe',
         email: 'john@msil.com',
-        password: '1234',
+        password: '12345'
       }
 
       const user = await userRepository.create(newUser)
@@ -86,7 +86,7 @@ describe('Users functional tests', () => {
       const newUser = {
         name: 'John Doe',
         email: 'john@mail.com',
-        password: '1234',
+        password: '12345'
       }
       await userRepository.create(newUser)
       const response = await global.testRequest

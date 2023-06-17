@@ -4,7 +4,7 @@ import { prisma } from '@src/database/client'
 import {
   AbstractErrorHandlerRepository,
   BeachRepository,
-  FilterOptions,
+  FilterOptions
 } from '.'
 
 class BeachPrismaRepository
@@ -14,7 +14,7 @@ class BeachPrismaRepository
   async create(data: Beach): Promise<Beach> {
     try {
       const beach = await prisma.beach.create({
-        data,
+        data
       })
       return Beach.create(beach)
     } catch (error) {
@@ -25,7 +25,7 @@ class BeachPrismaRepository
   async findOne(filter: FilterOptions): Promise<Beach> {
     try {
       const beach = await prisma.beach.findUniqueOrThrow({
-        where: filter,
+        where: filter
       })
       return Beach.create(beach)
     } catch (error) {
@@ -36,7 +36,7 @@ class BeachPrismaRepository
   async find(filter: FilterOptions): Promise<Beach[]> {
     try {
       const beaches = await prisma.beach.findMany({
-        where: filter,
+        where: filter
       })
       return beaches.map((beach) => Beach.create(beach))
     } catch (error) {
@@ -56,8 +56,8 @@ class BeachPrismaRepository
     try {
       const beaches = await prisma.beach.findMany({
         where: {
-          userId,
-        },
+          userId
+        }
       })
       return beaches.map((beach) => Beach.create(beach))
     } catch (error) {

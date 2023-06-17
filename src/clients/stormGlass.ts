@@ -48,7 +48,7 @@ export class StormGlassResponseError extends InternalError {
 }
 
 const stormGlasssResourceConfig: IConfig = config.get(
-  'App.resources.StormGlass',
+  'App.resources.StormGlass'
 )
 
 export class StormGlass {
@@ -69,19 +69,19 @@ export class StormGlass {
             lng,
             params: this.stormGlassAPIParams,
             source: this.stormGlassAPISource,
-            end: '1685649600',
+            end: '1685649600'
           },
           headers: {
-            Authorization: stormGlasssResourceConfig.get('apiToken'),
-          },
-        },
+            Authorization: stormGlasssResourceConfig.get('apiToken')
+          }
+        }
       )
       return this.normalizeResponse(response.data)
     } catch (error) {
       if (error instanceof Error && HTTPUtil.Request.isRequestError(error)) {
         const err = HTTPUtil.Request.extractErrorData(error)
         throw new StormGlassResponseError(
-          `Error: ${JSON.stringify(err.data)} Code: ${err.status}`,
+          `Error: ${JSON.stringify(err.data)} Code: ${err.status}`
         )
       }
 
@@ -90,7 +90,7 @@ export class StormGlass {
   }
 
   private normalizeResponse(
-    points: StormGlassForecastResponse,
+    points: StormGlassForecastResponse
   ): ForecastPoint[] {
     return points.hours.filter(this.isValidPoint.bind(this)).map((point) => ({
       time: point.time,
@@ -100,7 +100,7 @@ export class StormGlass {
       waveDirection: point.waveDirection[this.stormGlassAPISource],
       waveHeight: point.waveHeight[this.stormGlassAPISource],
       windDirection: point.windDirection[this.stormGlassAPISource],
-      windSpeed: point.windSpeed[this.stormGlassAPISource],
+      windSpeed: point.windSpeed[this.stormGlassAPISource]
     }))
   }
 

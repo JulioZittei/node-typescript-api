@@ -10,6 +10,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  name     String
+  email    String  @unique
+  password String
+  Beach    Beach[]
+
+  @@map("users")
+}
+
 model Beach {
   id       String @id @default(auto()) @map("_id") @db.ObjectId
   name     String
@@ -17,13 +27,7 @@ model Beach {
   lat      Float
   lng      Float
   userId   String
+  User     User   @relation(fields: [userId], references: [id])
 
   @@map("beaches")
-}
-
-model User {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  name     String
-  email    String @unique
-  password String
 }

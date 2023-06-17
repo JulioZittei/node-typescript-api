@@ -19,7 +19,7 @@ class Forecast {
   constructor(protected stormGlass = new StormGlass()) {}
 
   public async processForecastForBeaches(
-    beaches: Beach[],
+    beaches: Beach[]
   ): Promise<TimeForecast[]> {
     try {
       const pointsWithCorrectSources: BeachForecast[] = []
@@ -41,7 +41,7 @@ class Forecast {
       lng: beach.lng,
       name: beach.name,
       position: beach.position,
-      rating: 2,
+      rating: 2
     }))
   }
 
@@ -54,7 +54,7 @@ class Forecast {
       } else {
         forecastByTime.push({
           time: point.time,
-          forecast: [point],
+          forecast: [point]
         })
       }
     }

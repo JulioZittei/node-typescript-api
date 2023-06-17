@@ -3,7 +3,7 @@ import { User } from '@src/models/user'
 import {
   UserRepository,
   FilterOptions,
-  AbstractErrorHandlerRepository,
+  AbstractErrorHandlerRepository
 } from '.'
 import AuthService from '@src/services/auth'
 
@@ -19,23 +19,23 @@ class UserPrismaRepository
 
         return await prisma.user.update({
           where: {
-            id,
+            id
           },
           data: {
             ...rest,
             password:
               data.password !== existsUser.password
                 ? await AuthService.hashPassword(data.password)
-                : data.password,
-          },
+                : data.password
+          }
         })
       }
 
       const createdUser = await prisma.user.create({
         data: {
           ...data,
-          password: await AuthService.hashPassword(data.password),
-        },
+          password: await AuthService.hashPassword(data.password)
+        }
       })
 
       return createdUser
@@ -47,7 +47,7 @@ class UserPrismaRepository
   async findOne(filter: FilterOptions): Promise<User> {
     try {
       const user = await prisma.user.findUniqueOrThrow({
-        where: filter,
+        where: filter
       })
       return user
     } catch (error) {
@@ -58,7 +58,7 @@ class UserPrismaRepository
   async find(filter: FilterOptions): Promise<User[]> {
     try {
       const users = await prisma.user.findMany({
-        where: filter,
+        where: filter
       })
       return users
     } catch (error) {

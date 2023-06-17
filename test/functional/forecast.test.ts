@@ -1,20 +1,32 @@
 import { Beach, GeoPosition } from '@src/models/beach'
-import { BeachRepository } from '@src/repositories'
+import { BeachRepository, UserRepository } from '@src/repositories'
 import { BeachPrismaRepository } from '@src/repositories/beachRepository'
 import stormGlassWeather3HoursFixture from '@test/fixtures/stormglass_weather_3_hours.json'
 import apiForecastResponse1Beach from '@test/fixtures/api_forecast_response_1_beach.json'
 import nock from 'nock'
+import { UserPrismaRepository } from '@src/repositories/userRepository'
+import AuthService from '@src/services/auth'
 
 describe('Beach forecast functional tests', () => {
+  const userRepository: UserRepository = new UserPrismaRepository()
+  const defaultUser = {
+    name: 'Joe Doe',
+    email: 'john@mail.com',
+    password: '12345'
+  }
+  let token: string
   beforeEach(async () => {
     const beachRepository: BeachRepository = new BeachPrismaRepository()
     await beachRepository.deleteAll()
+    await userRepository.deleteAll()
+    const user = await userRepository.create(defaultUser)
+    token = AuthService.generateToken(user.id as string)
     const defaultBeach: Beach = {
       lat: -33.792726,
       lng: 151.289824,
       name: 'Manly',
       position: GeoPosition.E,
-      userId: 'user-1',
+      userId: user.id!
     }
     await beachRepository.create(defaultBeach)
   })
@@ -22,8 +34,8 @@ describe('Beach forecast functional tests', () => {
     nock('https://api.stormglass.io:443', {
       encodedQueryParams: true,
       reqheaders: {
-        Authorization: (): boolean => true,
-      },
+        Authorization: (): boolean => true
+      }
     })
       .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
       .get('/v2/weather/point')
@@ -32,11 +44,13 @@ describe('Beach forecast functional tests', () => {
         lng: '151.289824',
         params: /(.*)/,
         source: 'noaa',
-        end: /(.*)/,
+        end: /(.*)/
       })
       .reply(200, stormGlassWeather3HoursFixture)
 
-    const { body, status } = await global.testRequest.get('/forecast')
+    const { body, status } = await global.testRequest
+      .get('/forecast')
+      .set({ 'x-access-token': token })
     expect(status).toBe(200)
     expect(body).toEqual(apiForecastResponse1Beach)
   })
@@ -45,15 +59,17 @@ describe('Beach forecast functional tests', () => {
     nock('https://api.stormglass.io:443', {
       encodedQueryParams: true,
       reqheaders: {
-        Authorization: (): boolean => true,
-      },
+        Authorization: (): boolean => true
+      }
     })
       .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
       .get('/v1/weather/point')
       .query({ lat: '-33.792726', lng: '151.289824' })
       .replyWithError('Something went wrong')
 
-    const { status } = await global.testRequest.get(`/forecast`)
+    const { status } = await global.testRequest
+      .get(`/forecast`)
+      .set({ 'x-access-token': token })
 
     expect(status).toBe(500)
   })

@@ -4,7 +4,7 @@ enum GeoPosition {
   S = 'S',
   E = 'E',
   W = 'W',
-  N = 'N',
+  N = 'N'
 }
 
 class Beach {
@@ -30,7 +30,7 @@ class Beach {
     position,
     lat,
     lng,
-    userId,
+    userId
   }: BeachModel): Beach {
     const beach: Beach = {
       id,
@@ -38,7 +38,7 @@ class Beach {
       position: GeoPosition[position as keyof typeof GeoPosition],
       lat,
       lng,
-      userId,
+      userId
     }
     return beach
   }

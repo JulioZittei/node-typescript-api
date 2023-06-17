@@ -3,13 +3,13 @@ import {
   DatabaseError,
   DatabaseKnownClientError,
   DatabaseUnknowClientError,
-  DatabaseValidationError,
+  DatabaseValidationError
 } from '@src/util/errors/internal-error'
 
 export abstract class BaseController {
   protected sendCreatedUpdatedErrorResponse(
     res: Response,
-    error: unknown,
+    error: unknown
   ): void {
     if (
       error instanceof DatabaseValidationError ||
@@ -21,7 +21,7 @@ export abstract class BaseController {
     } else {
       res.status(500).send({
         code: 500,
-        error: 'Something went wrong.',
+        error: 'Something went wrong.'
       })
     }
   }
