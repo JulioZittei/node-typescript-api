@@ -1,4 +1,4 @@
-import 'module-alias-jest/register'
+import './util/module-alias'
 import { Server } from '@overnightjs/core'
 import { ForeCastController } from '@src/controllers/forecast'
 import express, { Application } from 'express'
