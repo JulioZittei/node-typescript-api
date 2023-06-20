@@ -1,15 +1,16 @@
-import { Response } from 'express'
+import logger from '@src/logger'
 import {
   DatabaseError,
   DatabaseKnownClientError,
   DatabaseUnknowClientError,
-  DatabaseValidationError
+  DatabaseValidationError,
 } from '@src/util/errors/internal-error'
+import { Response } from 'express'
 
 export abstract class BaseController {
   protected sendCreatedUpdatedErrorResponse(
     res: Response,
-    error: unknown
+    error: unknown,
   ): void {
     if (
       error instanceof DatabaseValidationError ||
@@ -19,9 +20,10 @@ export abstract class BaseController {
       const clientErrors = this.handleClientErrors(error)
       res.status(clientErrors.code).send(clientErrors)
     } else {
+      logger.error(error)
       res.status(500).send({
         code: 500,
-        error: 'Something went wrong.'
+        error: 'Something went wrong.',
       })
     }
   }
@@ -34,6 +36,8 @@ export abstract class BaseController {
       if (error.prismaCodeError === 'P2002') {
         return { code: 409, error: error.message }
       }
+
+      const
     }
     return { code: 422, error: error.message }
   }

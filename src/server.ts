@@ -5,6 +5,7 @@ import express, { Application } from 'express'
 import { BeachesController } from './controllers/beaches'
 import * as http from 'http'
 import { UsersController } from './controllers/users'
+import logger from './logger'
 
 export class SetupServer extends Server {
   private server?: http.Server
@@ -19,7 +20,7 @@ export class SetupServer extends Server {
 
   public start(): void {
     this.server = this.app.listen(this.port, () => {
-      console.log('Server listening on port: ' + this.port)
+      logger.info('Server listening on port: ' + this.port)
     })
   }
 
@@ -38,7 +39,7 @@ export class SetupServer extends Server {
     this.addControllers([
       forecastController,
       beachesController,
-      usersController
+      usersController,
     ])
   }
 }

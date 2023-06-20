@@ -8,7 +8,7 @@ import AuthService from '@src/services/auth'
 @Controller('users')
 export class UsersController extends BaseController {
   constructor(
-    protected userRepository: UserRepository = new UserPrismaRepository()
+    protected userRepository: UserRepository = new UserPrismaRepository(),
   ) {
     super()
   }
@@ -33,21 +33,21 @@ export class UsersController extends BaseController {
       return res.status(401).send({
         code: 401,
         message: 'User not found!',
-        description: 'Try verifying your email address.'
+        description: 'Try verifying your email address.',
       })
     }
 
     if (!(await AuthService.comparePasswords(password, user?.password))) {
       return res.status(401).send({
         code: 401,
-        message: 'Password does not match!'
+        message: 'Password does not match!',
       })
     }
 
     const token = AuthService.generateToken(user.id as string)
 
     return res.status(200).send({
-      token
+      token,
     })
   }
 }

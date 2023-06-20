@@ -1,18 +1,18 @@
 import { Beach, GeoPosition } from '@src/models/beach'
 import { BeachRepository, UserRepository } from '@src/repositories'
 import { BeachPrismaRepository } from '@src/repositories/beachRepository'
-import stormGlassWeather3HoursFixture from '@test/fixtures/stormglass_weather_3_hours.json'
-import apiForecastResponse1Beach from '@test/fixtures/api_forecast_response_1_beach.json'
-import nock from 'nock'
 import { UserPrismaRepository } from '@src/repositories/userRepository'
 import AuthService from '@src/services/auth'
+import apiForecastResponse1Beach from '@test/fixtures/api_forecast_response_1_beach.json'
+import stormGlassWeather3HoursFixture from '@test/fixtures/stormglass_weather_3_hours.json'
+import nock from 'nock'
 
 describe('Beach forecast functional tests', () => {
   const userRepository: UserRepository = new UserPrismaRepository()
   const defaultUser = {
     name: 'Joe Doe',
     email: 'john@mail.com',
-    password: '12345'
+    password: '12345',
   }
   let token: string
   beforeEach(async () => {
@@ -26,7 +26,7 @@ describe('Beach forecast functional tests', () => {
       lng: 151.289824,
       name: 'Manly',
       position: GeoPosition.E,
-      userId: user.id!
+      userId: user.id as string,
     }
     await beachRepository.create(defaultBeach)
   })
@@ -34,8 +34,8 @@ describe('Beach forecast functional tests', () => {
     nock('https://api.stormglass.io:443', {
       encodedQueryParams: true,
       reqheaders: {
-        Authorization: (): boolean => true
-      }
+        Authorization: (): boolean => true,
+      },
     })
       .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
       .get('/v2/weather/point')
@@ -44,7 +44,7 @@ describe('Beach forecast functional tests', () => {
         lng: '151.289824',
         params: /(.*)/,
         source: 'noaa',
-        end: /(.*)/
+        end: /(.*)/,
       })
       .reply(200, stormGlassWeather3HoursFixture)
 
@@ -59,8 +59,8 @@ describe('Beach forecast functional tests', () => {
     nock('https://api.stormglass.io:443', {
       encodedQueryParams: true,
       reqheaders: {
-        Authorization: (): boolean => true
-      }
+        Authorization: (): boolean => true,
+      },
     })
       .defaultReplyHeaders({ 'access-control-allow-origin': '*' })
       .get('/v1/weather/point')

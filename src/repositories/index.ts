@@ -1,12 +1,13 @@
-import { User } from '@src/models/user'
-import { Beach } from '@src/models/beach'
 import { Prisma } from '@prisma/client'
+import logger from '@src/logger'
+import { Beach } from '@src/models/beach'
+import { User } from '@src/models/user'
 import {
   DatabaseInitializationError,
   DatabaseInternalError,
   DatabaseKnownClientError,
   DatabaseUnknowClientError,
-  DatabaseValidationError
+  DatabaseValidationError,
 } from '@src/util/errors/internal-error'
 
 export type FilterOptions = Record<string, unknown>
@@ -21,33 +22,33 @@ export interface BaseRepository<T> {
 export abstract class AbstractErrorHandlerRepository {
   protected handleError(error: unknown): never {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      console.error(
+      logger.error(
         'ClientKnownRequestError happened to the database: ',
-        error.message
+        error.message,
       )
       throw new DatabaseKnownClientError(error.message, error.code)
     } else if (error instanceof Prisma.PrismaClientValidationError) {
-      console.error(
+      logger.error(
         'ClientValidationError happened to the database: ',
-        error.message
+        error.message,
       )
       throw new DatabaseValidationError(error.message)
     } else if (error instanceof Prisma.PrismaClientUnknownRequestError) {
-      console.error(
+      logger.error(
         'ClientUnknownRequestError happened to the database: ',
-        error.message
+        error.message,
       )
       throw new DatabaseUnknowClientError(error.message)
     } else if (error instanceof Prisma.PrismaClientInitializationError) {
-      console.error(
+      logger.error(
         'ClientInitializationError: happened to the database: ',
-        error.message
+        error.message,
       )
       throw new DatabaseInitializationError(error.message)
     } else {
-      console.error(
+      logger.error(
         'Something unexpected happened to the database: ',
-        (error as Error).message
+        (error as Error).message,
       )
       throw new DatabaseInternalError((error as Error).message)
     }
@@ -58,4 +59,4 @@ export interface BeachRepository extends BaseRepository<Beach> {
   findAllBeachesForUser(userId: string): Promise<Beach[]>
 }
 
-export interface UserRepository extends BaseRepository<User> {}
+export type UserRepository = BaseRepository<User>

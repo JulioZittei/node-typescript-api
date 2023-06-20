@@ -11,7 +11,7 @@ describe('Beaches functional tests', () => {
   const defaultUser = {
     name: 'Joe Doe',
     email: 'john@msil.com',
-    password: '12345'
+    password: '12345',
   }
   let token: string
   let user: User
@@ -28,7 +28,7 @@ describe('Beaches functional tests', () => {
         lng: 151.289824,
         name: 'Manly',
         position: 'E',
-        userId: user.id
+        userId: user.id,
       }
 
       const response = await global.testRequest
@@ -42,8 +42,8 @@ describe('Beaches functional tests', () => {
           lng: 151.289824,
           name: 'Manly',
           position: 'E',
-          userId: user.id
-        })
+          userId: user.id,
+        }),
       )
     })
 
@@ -53,7 +53,7 @@ describe('Beaches functional tests', () => {
         lng: 151.289824,
         name: 'Manly',
         position: 'E',
-        userId: user.id
+        userId: user.id,
       }
 
       const response = await global.testRequest
@@ -65,21 +65,21 @@ describe('Beaches functional tests', () => {
         expect.objectContaining({
           code: 422,
           error: expect.stringContaining(
-            "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float."
-          )
-        })
+            "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float.",
+          ),
+        }),
       )
     })
 
     it('should return 500 when there is any error other than validation error', async () => {
       jest.spyOn(prisma.beach, 'create').mockRejectedValueOnce({
-        message: 'fail to create beach'
+        message: 'fail to create beach',
       })
       const newBeach = {
         lat: -33.792726,
         lng: 46.43243,
         name: 'Manly',
-        position: 'E'
+        position: 'E',
       }
 
       const response = await global.testRequest
@@ -89,7 +89,7 @@ describe('Beaches functional tests', () => {
       expect(response.status).toBe(500)
       expect(response.body).toEqual({
         code: 500,
-        error: 'Something went wrong.'
+        error: 'Something went wrong.',
       })
     })
   })

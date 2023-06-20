@@ -1,13 +1,8 @@
-import axios, {
-  Axios,
-  AxiosError,
-  AxiosRequestConfig,
-  AxiosResponse
-} from 'axios'
+import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios'
 
-export interface RequestConfig extends AxiosRequestConfig {}
+export type RequestConfig = AxiosRequestConfig
 
-export interface Response<T = any> extends AxiosResponse<T> {}
+export type Response<T = unknown> = AxiosResponse<T>
 
 export class Request {
   constructor(private request = axios) {}
@@ -23,13 +18,13 @@ export class Request {
   }
 
   public static extractErrorData(
-    error: unknown
+    error: unknown,
   ): Pick<AxiosResponse, 'data' | 'status'> {
     const axiosError = error as AxiosError
     if (axiosError.response && axiosError.response.status) {
       return {
         data: axiosError.response.data,
-        status: axiosError.response.status
+        status: axiosError.response.status,
       }
     }
 

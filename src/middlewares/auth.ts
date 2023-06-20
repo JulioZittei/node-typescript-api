@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 export function authMiddleware(
   req: Partial<Request>,
   res: Partial<Response>,
-  next: NextFunction
+  next: NextFunction,
 ): void {
   try {
     const token = req.headers?.['x-access-token']

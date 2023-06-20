@@ -11,7 +11,7 @@ import { authMiddleware } from '@src/middlewares/auth'
 export class ForeCastController extends BaseController {
   constructor(
     protected beachRepository: BeachRepository = new BeachPrismaRepository(),
-    protected forecast: Forecast = new Forecast()
+    protected forecast: Forecast = new Forecast(),
   ) {
     super()
   }
@@ -19,14 +19,14 @@ export class ForeCastController extends BaseController {
   @Get('')
   public async getForecastForLoggedUser(
     req: Request,
-    res: Response
+    res: Response,
   ): Promise<void> {
     try {
       const beaches = await this.beachRepository.find({
-        userId: req.context.userId
+        userId: req.context.userId,
       })
       const forecastData = await this.forecast.processForecastForBeaches(
-        beaches
+        beaches,
       )
       res.status(200).send(forecastData)
     } catch (error) {

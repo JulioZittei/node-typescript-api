@@ -1,5 +1,5 @@
-import 'module-alias-jest/register'
 import { SetupServer } from '@src/server'
+import 'module-alias-jest/register'
 import supertest from 'supertest'
 
 let server: SetupServer
@@ -9,5 +9,3 @@ beforeAll(async () => {
   await server.init()
   global.testRequest = supertest(server.getApp())
 })
-
-afterAll(async () => {})

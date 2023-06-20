@@ -1,41 +1,66 @@
 import { prisma } from '@src/database/client'
+import logger from '@src/logger'
 import { User } from '@src/models/user'
-import {
-  UserRepository,
-  FilterOptions,
-  AbstractErrorHandlerRepository
-} from '.'
 import AuthService from '@src/services/auth'
+import {
+  AbstractErrorHandlerRepository,
+  FilterOptions,
+  UserRepository,
+} from '.'
 
 class UserPrismaRepository
   extends AbstractErrorHandlerRepository
   implements UserRepository
 {
   async create(data: User): Promise<User> {
-    try {
-      if (data?.id) {
-        const { id, ...rest } = data
-        const existsUser = await this.findOne({ id })
+    let hashedPassword = ''
 
+    if (data?.id) {
+      const { id, ...rest } = data
+      const existsUser = await this.findOne({ id })
+
+      try {
+        hashedPassword = await AuthService.hashPassword(data.password)
+      } catch (error) {
+        logger.error(
+          `Error hashing the password for the user ${data.name}`,
+          error,
+        )
+      }
+
+      try {
         return await prisma.user.update({
           where: {
-            id
+            id,
           },
           data: {
             ...rest,
             password:
               data.password !== existsUser.password
-                ? await AuthService.hashPassword(data.password)
-                : data.password
-          }
+                ? hashedPassword
+                : data.password,
+          },
         })
+      } catch (error) {
+        this.handleError(error)
       }
+    }
 
+    try {
+      hashedPassword = await AuthService.hashPassword(data.password)
+    } catch (error) {
+      logger.error(
+        `Error hashing the password for the user ${data.name}`,
+        error,
+      )
+    }
+
+    try {
       const createdUser = await prisma.user.create({
         data: {
           ...data,
-          password: await AuthService.hashPassword(data.password)
-        }
+          password: hashedPassword,
+        },
       })
 
       return createdUser
@@ -47,7 +72,7 @@ class UserPrismaRepository
   async findOne(filter: FilterOptions): Promise<User> {
     try {
       const user = await prisma.user.findUniqueOrThrow({
-        where: filter
+        where: filter,
       })
       return user
     } catch (error) {
@@ -58,7 +83,7 @@ class UserPrismaRepository
   async find(filter: FilterOptions): Promise<User[]> {
     try {
       const users = await prisma.user.findMany({
-        where: filter
+        where: filter,
       })
       return users
     } catch (error) {

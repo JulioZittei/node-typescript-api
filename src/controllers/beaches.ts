@@ -9,7 +9,7 @@ import { authMiddleware } from '@src/middlewares/auth'
 @ClassMiddleware(authMiddleware)
 export class BeachesController extends BaseController {
   constructor(
-    protected beachRepository: BeachRepository = new BeachPrismaRepository()
+    protected beachRepository: BeachRepository = new BeachPrismaRepository(),
   ) {
     super()
   }
@@ -19,7 +19,7 @@ export class BeachesController extends BaseController {
     try {
       const beach = await this.beachRepository.create({
         ...req.body,
-        userId: req.context.userId
+        userId: req.context.userId,
       })
       res.status(201).send(beach)
     } catch (error) {

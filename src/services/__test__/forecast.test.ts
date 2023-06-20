@@ -12,14 +12,14 @@ describe('Forecast Service', () => {
       lng: 151.289824,
       name: 'Manly',
       position: GeoPosition.E,
-      userId: 'user-1'
-    }
+      userId: 'user-1',
+    },
   ]
   const mockedStormGlassService = new StormGlass() as jest.Mocked<StormGlass>
 
   it('should return the forecast for a list of beaches', async () => {
     mockedStormGlassService.fetchPoints.mockResolvedValue(
-      stormGlassNormalizedResponseFixture
+      stormGlassNormalizedResponseFixture,
     )
     const expectedResponse = [
       {
@@ -38,9 +38,9 @@ describe('Forecast Service', () => {
             waveDirection: 231.38,
             waveHeight: 0.47,
             windDirection: 299.45,
-            windSpeed: 100
-          }
-        ]
+            windSpeed: 100,
+          },
+        ],
       },
       {
         time: '2020-04-26T01:00:00+00:00',
@@ -58,9 +58,9 @@ describe('Forecast Service', () => {
             waveDirection: 232.12,
             waveHeight: 0.46,
             windDirection: 310.48,
-            windSpeed: 100
-          }
-        ]
+            windSpeed: 100,
+          },
+        ],
       },
       {
         time: '2020-04-26T02:00:00+00:00',
@@ -78,15 +78,15 @@ describe('Forecast Service', () => {
             waveDirection: 232.86,
             waveHeight: 0.46,
             windDirection: 321.5,
-            windSpeed: 100
-          }
-        ]
-      }
+            windSpeed: 100,
+          },
+        ],
+      },
     ]
 
     const forecast = new Forecast(mockedStormGlassService)
     const beachesWithRating = await forecast.processForecastForBeaches(
-      defaultBeaches
+      defaultBeaches,
     )
 
     expect(beachesWithRating).toEqual(expectedResponse)
@@ -106,15 +106,15 @@ describe('Forecast Service', () => {
         lng: 151.289824,
         name: 'Manly',
         position: GeoPosition.E,
-        userId: 'user-1'
-      }
+        userId: 'user-1',
+      },
     ]
 
     mockedStormGlassService.fetchPoints.mockRejectedValue('Error fetching data')
 
     const forecast = new Forecast(mockedStormGlassService)
     await expect(forecast.processForecastForBeaches(beaches)).rejects.toThrow(
-      Error
+      Error,
     )
   })
 })
