@@ -35,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: Run all tests
-        run: npm run test:unit
+        run: npm run test
 
       - name: Deploy application
         if: ${{ github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main' }}
