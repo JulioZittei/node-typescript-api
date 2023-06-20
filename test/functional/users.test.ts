@@ -1,11 +1,14 @@
 import { User } from '@src/models/user'
-import { UserRepository } from '@src/repositories'
+import { BeachRepository, UserRepository } from '@src/repositories'
+import { BeachPrismaRepository } from '@src/repositories/beachRepository'
 import { UserPrismaRepository } from '@src/repositories/userRepository'
 import AuthService from '@src/services/auth'
 
 describe('Users functional tests', () => {
+  const beachRepository: BeachRepository = new BeachPrismaRepository()
   const userRepository: UserRepository = new UserPrismaRepository()
   beforeEach(async () => {
+    await beachRepository.deleteAll()
     await userRepository.deleteAll()
   })
   describe('When creating a new user with encrypted password', () => {
