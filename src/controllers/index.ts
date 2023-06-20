@@ -36,8 +36,6 @@ export abstract class BaseController {
       if (error.prismaCodeError === 'P2002') {
         return { code: 409, error: error.message }
       }
-
-      const
     }
     return { code: 422, error: error.message }
   }
