@@ -1,5 +1,4 @@
 import { SetupServer } from '@src/server'
-import 'module-alias-jest/register'
 import supertest from 'supertest'
 
 let server: SetupServer

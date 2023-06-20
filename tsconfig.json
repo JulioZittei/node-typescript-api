@@ -34,6 +34,7 @@
     "./src/**/*.ts",
     "./test/**/*.ts",
     "./@types/**/*.d.ts",
+    "**/*.ts"
   ],
   "exclude": [
     "./node_modules/*",

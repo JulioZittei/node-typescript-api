@@ -1,11 +1,12 @@
-const path = require('path')
-const aliases = require('module-alias-jest/register')
+import { resolve } from 'path'
 
 module.exports = {
-  rootDir: path.resolve(__dirname),
+  rootDir: resolve(__dirname),
   displayName: 'root-tests',
   testMatch: ['<rootDir>/src/**/*.test.ts'],
   testEnvironment: 'node',
+  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  coverageDirectory: 'coverage',
   clearMocks: true,
   transform: {
     '^.+\\.(ts|tsx)$': [
@@ -15,5 +16,8 @@ module.exports = {
       },
     ],
   },
-  moduleNameMapper: aliases.jest,
+  moduleNameMapper: {
+    '@src/(.*)': '<rootDir>/src/$1',
+    '@test/(.*)': '<rootDir>/test/$1',
+  },
 }
