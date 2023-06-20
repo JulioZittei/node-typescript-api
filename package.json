@@ -15,6 +15,7 @@
     "test:unit": "jest --passWithNoTests",
     "test:functional": "jest --projects ./test --runInBand --passWithNoTests",
     "test:staged": "npm run test",
+    "test:push": "jest --passWithNoTests --coverage && jest --projects ./test --runInBand --passWithNoTests --coverage",
     "husky:prepare": "husky install"
   },
   "engines": {
