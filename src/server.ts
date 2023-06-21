@@ -2,8 +2,8 @@ import './util/module-alias'
 import { Server } from '@overnightjs/core'
 import { ForeCastController } from '@src/controllers/forecast'
 import express, { Application } from 'express'
-import { BeachesController } from './controllers/beaches'
 import * as http from 'http'
+import { BeachesController } from './controllers/beaches'
 import { UsersController } from './controllers/users'
 import logger from './logger'
 
@@ -22,6 +22,19 @@ export class SetupServer extends Server {
     this.server = this.app.listen(this.port, () => {
       logger.info('Server listening on port: ' + this.port)
     })
+  }
+
+  public async close(): Promise<void> {
+    if (this.server) {
+      await new Promise((resolve, reject) => {
+        this.server?.close((err) => {
+          if (err) {
+            return reject(err)
+          }
+          resolve(true)
+        })
+      })
+    }
   }
 
   public getApp(): Application {
