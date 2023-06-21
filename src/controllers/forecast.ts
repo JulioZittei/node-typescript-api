@@ -1,10 +1,11 @@
 import { ClassMiddleware, Controller, Get } from '@overnightjs/core'
+import logger from '@src/logger'
+import { authMiddleware } from '@src/middlewares/auth'
 import { BeachRepository } from '@src/repositories'
 import { BeachPrismaRepository } from '@src/repositories/beachRepository'
 import { Forecast } from '@src/services/forecast'
 import { Request, Response } from 'express'
 import { BaseController } from '.'
-import { authMiddleware } from '@src/middlewares/auth'
 
 @Controller('forecast')
 @ClassMiddleware(authMiddleware)
@@ -22,12 +23,14 @@ export class ForeCastController extends BaseController {
     res: Response,
   ): Promise<void> {
     try {
+      logger.info('Getting forecast')
       const beaches = await this.beachRepository.find({
         userId: req.context.userId,
       })
       const forecastData = await this.forecast.processForecastForBeaches(
         beaches,
       )
+      logger.info('Returning forecast')
       res.status(200).send(forecastData)
     } catch (error) {
       this.sendCreatedUpdatedErrorResponse(res, error)
