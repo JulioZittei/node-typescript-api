@@ -64,7 +64,8 @@ describe('Beaches functional tests', () => {
       expect(response.body).toEqual(
         expect.objectContaining({
           code: 422,
-          error: expect.stringContaining(
+          error: 'Unprocessable Entity',
+          message: expect.stringContaining(
             "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float.",
           ),
         }),
@@ -89,7 +90,8 @@ describe('Beaches functional tests', () => {
       expect(response.status).toBe(500)
       expect(response.body).toEqual({
         code: 500,
-        error: 'Something went wrong.',
+        error: 'Internal Server Error',
+        message: 'Something went wrong.',
       })
     })
   })

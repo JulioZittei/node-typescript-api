@@ -43,7 +43,10 @@ describe('Users functional tests', () => {
     expect(response.status).toBe(422)
     expect(response.body).toEqual({
       code: 422,
-      error: expect.stringContaining('Argument name for data.name is missing.'),
+      error: 'Unprocessable Entity',
+      message: expect.stringContaining(
+        'Argument name for data.name is missing.',
+      ),
     })
   })
 
@@ -59,7 +62,8 @@ describe('Users functional tests', () => {
     expect(response.status).toBe(409)
     expect(response.body).toEqual({
       code: 409,
-      error: expect.stringContaining(
+      error: 'Conflict',
+      message: expect.stringContaining(
         'Unique constraint failed on the constraint: `users_email_key`',
       ),
     })

@@ -1,4 +1,5 @@
 import logger from '@src/logger'
+import ApiError, { APIError } from '@src/util/errors/api-error'
 import {
   DatabaseError,
   DatabaseKnownClientError,
@@ -18,13 +19,20 @@ export abstract class BaseController {
       error instanceof DatabaseUnknowClientError
     ) {
       const clientErrors = this.handleClientErrors(error)
-      res.status(clientErrors.code).send(clientErrors)
+      res.status(clientErrors.code).send(
+        ApiError.format({
+          code: clientErrors.code,
+          message: clientErrors.error,
+        }),
+      )
     } else {
       logger.error(error)
-      res.status(500).send({
-        code: 500,
-        error: 'Something went wrong.',
-      })
+      res.status(500).send(
+        ApiError.format({
+          code: 500,
+          message: 'Something went wrong.',
+        }),
+      )
     }
   }
 
@@ -38,5 +46,9 @@ export abstract class BaseController {
       }
     }
     return { code: 422, error: error.message }
+  }
+
+  protected sendErrorResponse(res: Response, apiError: APIError): Response {
+    return res.status(apiError.code).send(ApiError.format(apiError))
   }
 }

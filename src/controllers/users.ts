@@ -35,7 +35,8 @@ export class UsersController extends BaseController {
 
     if (!user) {
       logger.info(`User ${email} not found`)
-      return res.status(401).send({
+
+      return this.sendErrorResponse(res, {
         code: 401,
         message: 'User not found!',
         description: 'Try verifying your email address.',
@@ -44,7 +45,7 @@ export class UsersController extends BaseController {
 
     if (!(await AuthService.comparePasswords(password, user?.password))) {
       logger.info(`Password does not match`)
-      return res.status(401).send({
+      return this.sendErrorResponse(res, {
         code: 401,
         message: 'Password does not match!',
       })

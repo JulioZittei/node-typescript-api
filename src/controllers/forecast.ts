@@ -33,7 +33,10 @@ export class ForeCastController extends BaseController {
       logger.info('Returning forecast')
       res.status(200).send(forecastData)
     } catch (error) {
-      this.sendCreatedUpdatedErrorResponse(res, error)
+      this.sendErrorResponse(res, {
+        code: 500,
+        message: 'Something went wrong.',
+      })
     }
   }
 }
