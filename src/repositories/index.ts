@@ -14,7 +14,7 @@ export type FilterOptions = Record<string, unknown>
 
 export interface BaseRepository<T> {
   create(data: T): Promise<T>
-  findOne(filter: FilterOptions): Promise<T | undefined>
+  findOne(filter: FilterOptions): Promise<T>
   find(filter: FilterOptions): Promise<T[]>
   deleteAll(): Promise<void>
 }

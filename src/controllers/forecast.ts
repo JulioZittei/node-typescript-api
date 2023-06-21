@@ -21,7 +21,7 @@ export class ForeCastController extends BaseController {
   public async getForecastForLoggedUser(
     req: Request,
     res: Response,
-  ): Promise<void> {
+  ): Promise<Response> {
     try {
       logger.info('Getting forecast')
       const beaches = await this.beachRepository.find({
@@ -31,9 +31,9 @@ export class ForeCastController extends BaseController {
         beaches,
       )
       logger.info('Returning forecast')
-      res.status(200).send(forecastData)
+      return res.status(200).send(forecastData)
     } catch (error) {
-      this.sendErrorResponse(res, {
+      return this.sendErrorResponse(res, {
         code: 500,
         message: 'Something went wrong.',
       })

@@ -9,6 +9,8 @@ import nock from 'nock'
 
 describe('Beach forecast functional tests', () => {
   const userRepository: UserRepository = new UserPrismaRepository()
+  const beachRepository: BeachRepository = new BeachPrismaRepository()
+
   const defaultUser = {
     name: 'Joe Doe',
     email: 'john@mail.com',
@@ -16,7 +18,6 @@ describe('Beach forecast functional tests', () => {
   }
   let token: string
   beforeEach(async () => {
-    const beachRepository: BeachRepository = new BeachPrismaRepository()
     await beachRepository.deleteAll()
     await userRepository.deleteAll()
     const user = await userRepository.create(defaultUser)

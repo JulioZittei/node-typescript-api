@@ -16,7 +16,7 @@ export class BeachesController extends BaseController {
   }
 
   @Post('')
-  public async create(req: Request, res: Response): Promise<void> {
+  public async create(req: Request, res: Response): Promise<Response> {
     try {
       logger.info('Creating beach')
       const beach = await this.beachRepository.create({
@@ -24,9 +24,9 @@ export class BeachesController extends BaseController {
         userId: req.context.userId,
       })
       logger.info('Returning beach')
-      res.status(201).send(beach)
+      return res.status(201).send(beach)
     } catch (error) {
-      this.sendCreatedUpdatedErrorResponse(res, error)
+      return this.sendCreatedUpdatedErrorResponse(res, error)
     }
   }
 }

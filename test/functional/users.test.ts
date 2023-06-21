@@ -15,7 +15,7 @@ describe('Users functional tests', () => {
     it('should successfully create a new user', async () => {
       const newUser = {
         name: 'Joe Doe',
-        email: 'john@msil.com',
+        email: 'john@mail.com',
         password: '12345',
       }
 
@@ -101,6 +101,36 @@ describe('Users functional tests', () => {
         .send({ email: newUser.email, password: 'different password' })
 
       expect(response.status).toBe(401)
+    })
+  })
+
+  describe('When getting user profile info', () => {
+    it(`Should return the token's owner profile information`, async () => {
+      const newUser = {
+        name: 'John Doe',
+        email: 'john@mail.com',
+        password: '1234',
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { password, ...user } = await userRepository.create(newUser)
+      const token = AuthService.generateToken(user.id as string)
+      const { body, status } = await global.testRequest
+        .get('/users/me')
+        .set({ 'x-access-token': token })
+
+      expect(status).toBe(200)
+      expect(body).toMatchObject(JSON.parse(JSON.stringify({ user })))
+    })
+
+    it(`Should return Not Found, when the user is not found`, async () => {
+      //create a new user but don't save it
+      const token = AuthService.generateToken('649344220cf5d2711d0ae0e1')
+      const { body, status } = await global.testRequest
+        .get('/users/me')
+        .set({ 'x-access-token': token })
+
+      expect(status).toBe(404)
+      expect(body.message).toBe('No User found')
     })
   })
 })

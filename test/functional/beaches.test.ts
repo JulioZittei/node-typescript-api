@@ -10,7 +10,7 @@ describe('Beaches functional tests', () => {
   const userRepository: UserRepository = new UserPrismaRepository()
   const defaultUser = {
     name: 'Joe Doe',
-    email: 'john@msil.com',
+    email: 'john@mail.com',
     password: '12345',
   }
   let token: string

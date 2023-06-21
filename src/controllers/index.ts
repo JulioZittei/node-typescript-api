@@ -12,14 +12,14 @@ export abstract class BaseController {
   protected sendCreatedUpdatedErrorResponse(
     res: Response,
     error: unknown,
-  ): void {
+  ): Response {
     if (
       error instanceof DatabaseValidationError ||
       error instanceof DatabaseKnownClientError ||
       error instanceof DatabaseUnknowClientError
     ) {
       const clientErrors = this.handleClientErrors(error)
-      res.status(clientErrors.code).send(
+      return res.status(clientErrors.code).send(
         ApiError.format({
           code: clientErrors.code,
           message: clientErrors.error,
@@ -27,7 +27,7 @@ export abstract class BaseController {
       )
     } else {
       logger.error(error)
-      res.status(500).send(
+      return res.status(500).send(
         ApiError.format({
           code: 500,
           message: 'Something went wrong.',
@@ -43,6 +43,8 @@ export abstract class BaseController {
     if (error instanceof DatabaseKnownClientError) {
       if (error.prismaCodeError === 'P2002') {
         return { code: 409, error: error.message }
+      } else if (error.prismaCodeError === 'P2025') {
+        return { code: 404, error: error.message }
       }
     }
     return { code: 422, error: error.message }
