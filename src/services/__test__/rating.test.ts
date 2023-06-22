@@ -90,7 +90,7 @@ describe('Rating Service', () => {
       const rating = defaultRating.getRateForPoint(point)
       expect(rating).toBe(5)
     })
-    it('should get a rating of 4 a good condition but with crossshore winds', () => {
+    it('should get a rating of 4 a good condition but with crosshore winds', () => {
       const point = {
         ...defaultPoint,
         ...{
