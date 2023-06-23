@@ -8,6 +8,11 @@ import { UsersController } from './controllers/users'
 import logger from './logger'
 import expressPino from 'express-pino-logger'
 import cors from 'cors'
+import swaggerUi from 'swagger-ui-express'
+import apiSchema from './api.schema.json'
+import * as OpenApiValidator from 'express-openapi-validator'
+import { OpenAPIV3 } from 'express-openapi-validator/dist/framework/types'
+import { apiErrorValidator } from './middlewares/api-error-validator'
 
 export class SetupServer extends Server {
   private server?: http.Server
@@ -17,7 +22,9 @@ export class SetupServer extends Server {
 
   public async init(): Promise<void> {
     this.setupExpress()
+    this.docsSetup()
     this.setupControllers()
+    this.setupErrorHandlers()
   }
 
   public start(): void {
@@ -45,6 +52,8 @@ export class SetupServer extends Server {
 
   private setupExpress(): void {
     this.app.use(express.json())
+    this.app.use(express.text())
+    this.app.use(express.urlencoded({ extended: false }))
     this.app.use(
       cors({
         origin: '*',
@@ -55,6 +64,21 @@ export class SetupServer extends Server {
         logger,
       }),
     )
+  }
+
+  private docsSetup(): void {
+    this.app.use('/docs', swaggerUi.serve, swaggerUi.setup(apiSchema))
+    this.app.use(
+      OpenApiValidator.middleware({
+        apiSpec: apiSchema as OpenAPIV3.Document,
+        validateRequests: true,
+        validateResponses: true,
+      }),
+    )
+  }
+
+  private setupErrorHandlers(): void {
+    this.app.use(apiErrorValidator)
   }
 
   private setupControllers(): void {

@@ -25,7 +25,7 @@ export class UsersController extends BaseController {
       logger.info('Returning user')
       return res.status(201).send(newUser)
     } catch (error) {
-      return this.sendCreatedUpdatedErrorResponse(res, error)
+      return this.sendCreatedUpdatedErrorResponse(req, res, error)
     }
   }
 
@@ -39,6 +39,7 @@ export class UsersController extends BaseController {
       if (!(await AuthService.comparePasswords(password, user.password))) {
         logger.info(`Password does not match`)
         return this.sendErrorResponse(res, {
+          path: req.originalUrl,
           code: 401,
           message: 'Password does not match!',
         })
@@ -55,12 +56,13 @@ export class UsersController extends BaseController {
       if (error instanceof DatabaseKnownClientError) {
         logger.info(`User ${email} not found`)
         return this.sendErrorResponse(res, {
+          path: req.originalUrl,
           code: 401,
           message: error.message,
           description: 'Try verifying your email address.',
         })
       }
-      return this.sendCreatedUpdatedErrorResponse(res, error)
+      return this.sendCreatedUpdatedErrorResponse(req, res, error)
     }
   }
 
@@ -77,7 +79,7 @@ export class UsersController extends BaseController {
 
       return res.status(200).send({ user })
     } catch (error) {
-      return this.sendCreatedUpdatedErrorResponse(res, error)
+      return this.sendCreatedUpdatedErrorResponse(req, res, error)
     }
   }
 }

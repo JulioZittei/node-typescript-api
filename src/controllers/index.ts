@@ -6,10 +6,11 @@ import {
   DatabaseUnknowClientError,
   DatabaseValidationError,
 } from '@src/util/errors/internal-error'
-import { Response } from 'express'
+import { Request, Response } from 'express'
 
 export abstract class BaseController {
   protected sendCreatedUpdatedErrorResponse(
+    req: Request,
     res: Response,
     error: unknown,
   ): Response {
@@ -21,6 +22,7 @@ export abstract class BaseController {
       const clientErrors = this.handleClientErrors(error)
       return res.status(clientErrors.code).send(
         ApiError.format({
+          path: req.originalUrl,
           code: clientErrors.code,
           message: clientErrors.error,
         }),
@@ -29,6 +31,7 @@ export abstract class BaseController {
       logger.error(error)
       return res.status(500).send(
         ApiError.format({
+          path: req.originalUrl,
           code: 500,
           message: 'Something went wrong.',
         }),
@@ -47,7 +50,7 @@ export abstract class BaseController {
         return { code: 404, error: error.message }
       }
     }
-    return { code: 422, error: error.message }
+    return { code: 400, error: error.message }
   }
 
   protected sendErrorResponse(res: Response, apiError: APIError): Response {

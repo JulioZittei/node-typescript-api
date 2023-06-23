@@ -33,17 +33,18 @@ describe('Users functional tests', () => {
     })
   })
 
-  it('Should return 422 when there is a validation error', async () => {
+  it('Should return a validation error', async () => {
     const newUser = {
       email: 'john@mail.com',
       password: '12345',
     }
     const response = await global.testRequest.post('/users').send(newUser)
 
-    expect(response.status).toBe(422)
+    expect(response.status).toBe(400)
     expect(response.body).toEqual({
-      code: 422,
-      error: 'Unprocessable Entity',
+      path: '/users',
+      code: 400,
+      error: 'Bad Request',
       message: expect.stringContaining(
         'Argument name for data.name is missing.',
       ),
@@ -61,6 +62,7 @@ describe('Users functional tests', () => {
 
     expect(response.status).toBe(409)
     expect(response.body).toEqual({
+      path: '/users',
       code: 409,
       error: 'Conflict',
       message: expect.stringContaining(

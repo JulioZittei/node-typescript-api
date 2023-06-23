@@ -47,7 +47,7 @@ describe('Beaches functional tests', () => {
       )
     })
 
-    it('should return 422 when there is a validation error', async () => {
+    it('should return a validation error', async () => {
       const newBeach = {
         lat: 'invalid_string',
         lng: 151.289824,
@@ -60,14 +60,13 @@ describe('Beaches functional tests', () => {
         .post('/beaches')
         .set({ 'x-access-token': token })
         .send(newBeach)
-      expect(response.status).toBe(422)
+      expect(response.status).toBe(400)
       expect(response.body).toEqual(
         expect.objectContaining({
-          code: 422,
-          error: 'Unprocessable Entity',
-          message: expect.stringContaining(
-            "Argument lat: Got invalid value 'invalid_string' on prisma.createOneBeach. Provided String, expected Float.",
-          ),
+          path: '/beaches',
+          code: 400,
+          error: 'Bad Request',
+          message: 'request/body/lat must be number',
         }),
       )
     })
@@ -89,6 +88,7 @@ describe('Beaches functional tests', () => {
         .set({ 'x-access-token': token })
       expect(response.status).toBe(500)
       expect(response.body).toEqual({
+        path: '/beaches',
         code: 500,
         error: 'Internal Server Error',
         message: 'Something went wrong.',

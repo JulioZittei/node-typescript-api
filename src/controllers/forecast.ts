@@ -35,6 +35,7 @@ export class ForeCastController extends BaseController {
       if (!req.context.userId) {
         logger.error('Missing userId')
         return this.sendErrorResponse(res, {
+          path: req.url,
           code: 500,
           message: 'Something went wrong',
         })
@@ -52,6 +53,7 @@ export class ForeCastController extends BaseController {
       return res.status(200).send(forecastData)
     } catch (error) {
       return this.sendErrorResponse(res, {
+        path: req.url,
         code: 500,
         message: 'Something went wrong.',
       })

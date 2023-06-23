@@ -26,7 +26,7 @@ export class BeachesController extends BaseController {
       logger.info('Returning beach')
       return res.status(201).send(beach)
     } catch (error) {
-      return this.sendCreatedUpdatedErrorResponse(res, error)
+      return this.sendCreatedUpdatedErrorResponse(req, res, error)
     }
   }
 }
