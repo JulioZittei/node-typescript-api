@@ -86,6 +86,7 @@
     "lodash": "^4.17.21",
     "module-alias": "^2.2.3",
     "moment": "^2.29.4",
+    "node-cache": "^5.1.2",
     "pino": "^8.14.1",
     "swagger-ui-express": "^4.6.3",
     "zod": "^3.21.4"

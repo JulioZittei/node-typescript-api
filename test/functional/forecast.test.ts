@@ -6,6 +6,7 @@ import AuthService from '@src/services/auth'
 import apiForecastResponse1Beach from '@test/fixtures/api_forecast_response_1_beach.json'
 import stormGlassWeather3HoursFixture from '@test/fixtures/stormglass_weather_3_hours.json'
 import nock from 'nock'
+import CacheUtil from '@src/util/cache'
 
 describe('Beach forecast functional tests', () => {
   const userRepository: UserRepository = new UserPrismaRepository()
@@ -21,7 +22,6 @@ describe('Beach forecast functional tests', () => {
     await beachRepository.deleteAll()
     await userRepository.deleteAll()
     const user = await userRepository.create(defaultUser)
-    token = AuthService.generateToken(user.id as string)
     const defaultBeach: Beach = {
       lat: -33.792726,
       lng: 151.289824,
@@ -30,6 +30,8 @@ describe('Beach forecast functional tests', () => {
       userId: user.id as string,
     }
     await beachRepository.create(defaultBeach)
+    token = AuthService.generateToken(user.id as string)
+    CacheUtil.clearAllCache()
   })
   it('should return a forecast with just a few times', async () => {
     nock('https://api.stormglass.io:443', {
@@ -68,9 +70,11 @@ describe('Beach forecast functional tests', () => {
       .query({ lat: '-33.792726', lng: '151.289824' })
       .replyWithError('Something went wrong')
 
-    const { status } = await global.testRequest
+    const { status, body } = await global.testRequest
       .get(`/forecast`)
       .set({ 'x-access-token': token })
+
+    console.log(body)
 
     expect(status).toBe(500)
   })

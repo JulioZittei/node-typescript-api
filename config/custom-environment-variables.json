@@ -5,7 +5,7 @@
       "StormGlass": {
         "apiUrl": "STORM_GLASS_API_URL",
         "apiToken": "STORM_GLASS_API_KEY",
-        "cacheApiTtl": "STORM_GLASS_API_CACHE_TTL"
+        "cacheTtl": "STORM_GLASS_API_CACHE_TTL"
       }
     },
     "auth": {

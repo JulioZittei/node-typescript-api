@@ -1,14 +1,17 @@
 import { StormGlass } from '@src/clients/stormGlass'
 import * as HTTPUtil from '@src/util/request'
+import CacheUtil from '@src/util/cache'
 import stormGlassWeather3HoursFixture from '@test/fixtures/stormglass_weather_3_hours.json'
 import stormGlassNormalized3HoursFixture from '@test/fixtures/stormglass_normalized_response_3_hours.json'
 
 jest.mock('@src/util/request')
+jest.mock('@src/util/cache')
 
 describe('StormGlass client', () => {
   const MockedRequestClass = HTTPUtil.Request as jest.Mocked<
     typeof HTTPUtil.Request
   >
+  const MockedCacheUtil = CacheUtil as jest.Mocked<typeof CacheUtil>
   const mockedRequest = new HTTPUtil.Request() as jest.Mocked<HTTPUtil.Request>
   it('should return the normalized forecast from the StormGlass service', async () => {
     const lat = -33.792726
@@ -17,6 +20,8 @@ describe('StormGlass client', () => {
     mockedRequest.get.mockResolvedValue({
       data: stormGlassWeather3HoursFixture,
     } as HTTPUtil.Response)
+
+    MockedCacheUtil.get.mockReturnValue(undefined)
 
     const stormGlass = new StormGlass(mockedRequest)
     const response = await stormGlass.fetchPoints(lat, lng)
@@ -41,6 +46,8 @@ describe('StormGlass client', () => {
       data: incompleteResponse,
     } as HTTPUtil.Response)
 
+    MockedCacheUtil.get.mockReturnValue(undefined)
+
     const stormGlass = new StormGlass(mockedRequest)
     const response = await stormGlass.fetchPoints(lat, lng)
 
@@ -52,6 +59,8 @@ describe('StormGlass client', () => {
     const lng = 151.289824
 
     mockedRequest.get.mockRejectedValue({ message: 'Network Error' })
+
+    MockedCacheUtil.get.mockReturnValue(undefined)
 
     const stormGlass = new StormGlass(mockedRequest)
 
@@ -82,6 +91,8 @@ describe('StormGlass client', () => {
       status: 429,
       data: { errors: ['Rate Limit reached'] },
     })
+
+    MockedCacheUtil.get.mockReturnValue(undefined)
 
     const stormGlass = new StormGlass(mockedRequest)
 
