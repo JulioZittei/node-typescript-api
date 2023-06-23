@@ -70,6 +70,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
+                  "path": "/users",
                   "message": "Conflict",
                   "code": "409",
                   "error": "Conflict"
@@ -114,6 +115,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
+                  "path": "/users/authenticate",
                   "message": "User unauthorized",
                   "code": "401",
                   "error": "Unauthorized"
@@ -152,6 +154,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
+                  "path": "/users/me",
                   "message": "User not found",
                   "code": "404",
                   "error": "Not Found"
@@ -200,6 +203,7 @@
                   "$ref": "#/components/schemas/Error"
                 },
                 "example": {
+                  "path": "/beaches",
                   "message": "Error validating beach data",
                   "code": "400",
                   "error": "Bad Request"
@@ -244,6 +248,22 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/TimeForecast"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many requests.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                },
+                "example": {
+                  "path": "/forecast",
+                  "message": "Request limit exceeded for path: '/forecast'",
+                  "code": "429",
+                  "error": "Too Many Requests"
                 }
               }
             }

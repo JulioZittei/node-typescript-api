@@ -1,4 +1,4 @@
-import { ClassMiddleware, Controller, Get } from '@overnightjs/core'
+import { ClassMiddleware, Controller, Get, Middleware } from '@overnightjs/core'
 import logger from '@src/logger'
 import { authMiddleware } from '@src/middlewares/auth'
 import { BeachRepository } from '@src/repositories'
@@ -6,6 +6,25 @@ import { BeachPrismaRepository } from '@src/repositories/beachRepository'
 import { BeachForecast, Forecast } from '@src/services/forecast'
 import { Request, Response } from 'express'
 import { BaseController } from '.'
+import rateLimit from 'express-rate-limit'
+import ApiError from '@src/util/errors/api-error'
+
+const rateLimiter = rateLimit({
+  windowMs: 3 * 60 * 1000,
+  max: 10,
+  keyGenerator(req: Request): string {
+    return req.ip
+  },
+  handler(req: Request, res: Response): void {
+    res.status(429).send(
+      ApiError.format({
+        path: req.originalUrl,
+        code: 429,
+        message: `Request limit exceeded for path: '${req.originalUrl}'`,
+      }),
+    )
+  },
+})
 
 @Controller('forecast')
 @ClassMiddleware(authMiddleware)
@@ -18,6 +37,7 @@ export class ForeCastController extends BaseController {
   }
 
   @Get('')
+  @Middleware(rateLimiter)
   public async getForecastForLoggedUser(
     req: Request,
     res: Response,
